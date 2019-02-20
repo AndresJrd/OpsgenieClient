@@ -1,0 +1,18 @@
+package entity;
+
+import lombok.Data;
+import util.Util;
+
+@Data
+public class AlarmRate {
+    private String error;
+    private String message;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public AlarmRate(AlarmDetail alarmDetail){
+        this.error= alarmDetail.getMessage();
+        this.message=Util.validate(alarmDetail.getAlias());
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+}

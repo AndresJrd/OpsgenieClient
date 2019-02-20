@@ -1,0 +1,17 @@
+package io;
+
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.util.List;
+
+public class Io {
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static String readFile(String name) throws Exception{
+        File file = new File(name);
+        List lines = FileUtils.readLines(file, "UTF-8");
+        return lines.toString();
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+}
