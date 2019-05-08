@@ -32,6 +32,7 @@ public class AlarmDetail {
     private String owner;
     private String priority;
     private Report report;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public List<Tuple> getFieldValue() {
         Field[] fields = AlarmDetail.class.getDeclaredFields();
@@ -46,16 +47,17 @@ public class AlarmDetail {
         });
         return tuples;
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        public static List<String> getFields(){
-            Field[] fields = AlarmDetail.class.getDeclaredFields();
-            List<String> lines = new ArrayList<>();
-            Arrays.stream(fields).forEach(field -> {
-                field.setAccessible(true);
-                    lines.add(field.getName());
-            });
-            return lines;
-        }
+    public static List<String> getFields() {
+        Field[] fields = AlarmDetail.class.getDeclaredFields();
+        List<String> lines = new ArrayList<>();
+        Arrays.stream(fields).forEach(field -> {
+            field.setAccessible(true);
+            lines.add(field.getName());
+        });
+        return lines;
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

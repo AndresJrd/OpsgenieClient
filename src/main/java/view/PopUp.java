@@ -1,9 +1,12 @@
 package view;
 
 import config.Config;
+import entity.Teams;
+import helper.KeyValue;
 import view.util.NumericTextField;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +17,8 @@ import util.Exporter;
 import util.Methods;
 
 import java.net.URL;
+import java.util.Comparator;
+
 
 public class PopUp {
     JFrame jfM;
@@ -26,6 +31,7 @@ public class PopUp {
             e.printStackTrace();
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void exit() {
         JPanel panel = new JPanel(new GridLayout(0, 1));
@@ -36,20 +42,33 @@ public class PopUp {
             System.exit(0);
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void alarmsByTeam(Config config) {
-        String[] teams = new String[1];
-        teams[0] = "Mediations";
         JComboBox comboTeams;
         JTextField fielAlarmsToFind = new NumericTextField(false, false);
         JTextField fielFileName = new JTextField();
         JLabel jLabelStatus = new JLabel("");
         jLabelStatus.setForeground(Color.red);
+        comboTeams = new JComboBox();
+        try {
+            String url = "https://api.opsgenie.com/v2/teams/";
+            System.out.println("url:" + url);
+            ClientHttp clientHttp = new ClientHttp(new URL(url), config.getToken());
+            Teams teams = clientHttp.executeRequest(clientHttp.setConfig(Methods.GET.toString()), Teams.class);
+            teams.getData().sort(Comparator.comparing(a->a.getName()));
+            teams.getData().stream().forEach(team -> {
+                comboTeams.addItem(new KeyValue(team.getName(),team.getId()));
+            });
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         JButton jb2 = new JButton("Find");
         try {
             JPanel jp1;
-            comboTeams = new JComboBox(teams);
+
 
             jfM = new JFrame("Opsgenie Alarms ");
             jfM.setLayout(null);
@@ -91,13 +110,14 @@ public class PopUp {
                         jLabelStatus.setText("Downloading reports...");
                         SwingWorker sWorker = new SwingWorker() {
                             public Boolean doInBackground() throws Exception {
-                                String url = "https://api.opsgenie.com/v2/alerts?limit="+fielAlarmsToFind.getText()+"&sort=createdAt&offset=0&order=desc&query=teams%" + config.getTeam();
-                                System.out.println("url:"+url);
-                                ClientHttp clientHttp = new ClientHttp(new URL(url),config.getToken());
+                                String url = "https://api.opsgenie.com/v2/alerts?limit=" + fielAlarmsToFind.getText() + "&sort=createdAt&offset=0&order=desc&query=teams="+((KeyValue) comboTeams.getSelectedItem()).getValue();
+                                System.out.println("url:" + url);
+                                ClientHttp clientHttp = new ClientHttp(new URL(url), config.getToken());
                                 Response response = clientHttp.executeRequest(clientHttp.setConfig(Methods.GET.toString()), Response.class);
                                 Exporter exporter = new Exporter("OpsGenieAlarm Detail");
                                 return exporter.exportDataDetail(response, fielFileName.getText());
                             }
+
                             public void done() {
                                 jLabelStatus.setText("Process finished!");
                             }

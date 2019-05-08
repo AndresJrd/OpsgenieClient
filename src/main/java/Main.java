@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.List;
 
 
 public class Main {
@@ -42,11 +42,10 @@ public class Main {
 
                     ObjectMapper mapper = new ObjectMapper();
                     String data=Io.readFile("ops.json");
-                    data=data.replace("[","");
-                    data=data.replace("]","");
 
                     System.out.println(data);
-                    config = mapper.readValue(data, Config.class);
+                    List<Config>configs=  mapper.readValue(data, mapper.getTypeFactory().constructCollectionType(List.class, Config.class));
+                    config = configs.get(0);
 
                 } catch (AWTException e) {
                     JOptionPane.showMessageDialog(null, "File not found opsgenie.json", "Opsgenie Client", JOptionPane.ERROR_MESSAGE);

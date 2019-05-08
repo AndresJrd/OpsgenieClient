@@ -9,9 +9,9 @@ public class AlarmRate {
     private String message;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public AlarmRate(AlarmDetail alarmDetail){
-        this.error= alarmDetail.getMessage();
-        this.message=Util.validate(alarmDetail.getAlias());
+    public AlarmRate(AlarmDetail alarmDetail) {
+        this.error = alarmDetail.getMessage();
+        this.message = Util.validate(alarmDetail.getAlias());
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
